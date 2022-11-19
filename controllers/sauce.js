@@ -8,7 +8,11 @@ exports.createSauce = (req, res, next) => {
     const sauce = new Sauce({
         ...sauceObject,
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+        likes: 0,
+        dislikes: 0,
+        usersLiked: [],
+        usersDisliked: []
     });
     sauce.save()
         .then(() => {res.status(201).json({message: 'Nouvelle sauce enregistrée!'})})
@@ -23,7 +27,7 @@ exports.getOneSauce = (req, res, next) => {
   
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ? {
-        ...JSON.parse(req.body.thing),
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body };
   
@@ -65,7 +69,7 @@ exports.getAllSauce = (req, res, next) => {
 };
 
 //-------Fonction Like et Dislike
-/*exports.likeSauce = (req, res, next) => {
+exports.likeSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
             if (req.body.like === 1) {
@@ -103,4 +107,4 @@ exports.getAllSauce = (req, res, next) => {
             }
         })
         .catch(error => res.status(400).json({ error }));   
-}    */
+}
