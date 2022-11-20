@@ -9,9 +9,18 @@ const auth = require('../back/middlewares/auth');
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("../back/routes/sauce");
 
+//Protection contre les attaques XSS
+const xss = require ('xss-clean')
+
+//Protection contre les attaques noSQL (injections)
+const mongoSanitize = require ('express-mongo-sanitize')
+
 
 const app = express();
-helmet({ crossOriginResourcePolicy: false, })
+//Utilisation du package de sécurité Helmet
+app.use(helmet({ crossOriginResourcePolicy: false, }))
+
+
 
 
 // connexion to mongoDB
@@ -30,7 +39,10 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use(express.json());
+app.use (bodyParser.json());
+app.use (mongoSanitize());
+app.use (xss());
+app.use(express.json({ limit : '10kb'})); //Limite les 'body' à 10kb
 
 
 app.use("/images", express.static(path.join(__dirname, "images")));
