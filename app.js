@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 app.use (bodyParser.json());
 app.use (mongoSanitize());
 app.use (xss());
-app.use(express.json({ limit : '10kb'})); //Limite les 'body' à 10kb
+app.use(express.json());
 
 
 app.use("/images", express.static(path.join(__dirname, "images")));
